@@ -28,6 +28,8 @@ import com.microsoft.maps.MapView;
 import com.microsoft.maps.OnMapElementTappedListener;
 import com.microsoft.maps.OnMapLoadingStatusChangedListener;
 
+import java.util.ArrayList;
+
 public class BingMaps extends MapView {
   MapElementLayer mapElementLayer;
   MapStyleSheet mapStyleSheet;
@@ -43,35 +45,59 @@ public class BingMaps extends MapView {
     }
   }
 
-  public void setPins(ReadableArray pins) {
+  public void setPins(ReadableArray pins, Boolean setViewOnPins, int mapViewMargin) {
+
     mapElementLayer.getElements().clear();
+
+    ArrayList<Geopoint> pinLocations = new ArrayList<Geopoint>();
+
     for (int i =0 ; i < pins.size(); i++) {
       ReadableMap pin = pins.getMap(i);
       double latitude = pin.getDouble("lat");
       double longitude = pin.getDouble("long");
       String icon = pin.getString("icon");
-      SVG svg = null;
-      try {
-        svg = SVG.getFromString(icon);
-      } catch (SVGParseException e) {
-        e.printStackTrace();
-      }
-      svg.setDocumentHeight(70);
-      svg.setDocumentWidth(70);
-      PictureDrawable drawable = new PictureDrawable(svg.renderToPicture());
-      Bitmap pinBitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-      Canvas canvas = new Canvas(pinBitmap);
-      canvas.drawPicture(drawable.getPicture());
+      String titleTxt = pin.getString("title");
+      MapIcon pushPin = new MapIcon();
 
       Geopoint pinLocation = new Geopoint(latitude, longitude);
 
-      MapIcon pushPin = new MapIcon();
-      MapImage mapImage = new MapImage(pinBitmap);
-
       pushPin.setLocation(pinLocation);
-      pushPin.setImage(mapImage);
+      pinLocations.add(pinLocation);
+
+      //add the icon to the pin if it's there
+      if (icon != null)
+      {
+        SVG svg = null;
+        try {
+          svg = SVG.getFromString(icon);
+        } catch (SVGParseException e) {
+          e.printStackTrace();
+        }
+        svg.setDocumentHeight(70);
+        svg.setDocumentWidth(70);
+        PictureDrawable drawable = new PictureDrawable(svg.renderToPicture());
+        Bitmap pinBitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(pinBitmap);
+        canvas.drawPicture(drawable.getPicture());
+
+        MapImage mapImage = new MapImage(pinBitmap);
+
+        pushPin.setImage(mapImage);
+      }
+      //add the title to the icon if it's there
+      if (titleTxt != null)
+      {
+        pushPin.setTitle(titleTxt);
+
+      }
 
       mapElementLayer.getElements().add(pushPin);
+    }
+
+    //now let's set the view to show all the pins
+    if (setViewOnPins)
+    {
+      this.setScene(MapScene.createFromLocationsAndMargin(pinLocations, mapViewMargin), MapAnimationKind.LINEAR);
     }
   }
 
@@ -89,6 +115,9 @@ public class BingMaps extends MapView {
 
   public BingMaps(Context context, final ReactContext reactContext) {
     super(context);
+
+    setCredentialsKey(BuildConfig.CREDENTIALS_KEY);
+
     FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
     this.setLayoutParams(layoutParams);
     that=this;

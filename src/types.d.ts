@@ -4,8 +4,15 @@ export interface MapLocation {
   zoom: number;
 }
 
-export interface MapPin {
+type MapPin = {
   lat: number;
   long: number;
-  icon: string;
-}
+  icon?: string;
+  title?: string;
+};
+
+type MapPins = {
+  centerPinsInView?: Boolean;
+  mapViewMargin?: number;
+  pins: MapPin[];
+};

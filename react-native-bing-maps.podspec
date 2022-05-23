@@ -13,11 +13,11 @@ Pod::Spec.new do |s|
   s.platforms    = { :ios => "10.0" }
   s.source       = { :git => "https://github.com/Akarsh08/react-native-bing-maps.git", :tag => "#{s.version}" }
 
-  
-  
+
+
   s.source_files = "ios/**/*.{h,m,mm,swift}"
-  
-  
+
+
   s.dependency "React-Core"
-  s.dependency 'MicrosoftMapsSDK', '~> 1.1.4'
+  s.dependency 'MicrosoftMapsSDK', '~> 1.2.0'
 end

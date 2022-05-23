@@ -3,11 +3,11 @@ import {
   requireNativeComponent,
   ViewStyle,
 } from 'react-native';
-import type { MapLocation, MapPin } from './types';
+import type { MapLocation, MapPins } from './types';
 
 type BingMapsProps = {
   credentialsKey: string;
-  pins?: MapPin[];
+  pins?: MapPins;
   mapLocation?: MapLocation;
   mapStyle?: string;
   style?: ViewStyle;
@@ -22,8 +22,7 @@ type BingMapsProps = {
   onMapLoadingStatusChanged?: (e: NativeSyntheticEvent<EventTarget>) => void;
 };
 
-export const BingMapsViewManager = requireNativeComponent<BingMapsProps>(
-  'BingMapsView'
-);
+export const BingMapsViewManager =
+  requireNativeComponent<BingMapsProps>('BingMapsView');
 
 export default BingMapsViewManager;

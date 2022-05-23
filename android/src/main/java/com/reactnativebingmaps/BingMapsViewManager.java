@@ -23,11 +23,31 @@ public class BingMapsViewManager extends SimpleViewManager<BingMaps> {
 //    private static final Geopoint location = new Geopoint(12.9063622, 77.6049138);  // your pin lat-long coordinates
 
   @ReactProp(name = "pins")
-  public void setPins(BingMaps bingMaps, ReadableArray pins) {
-    bingMaps.setPins(pins);
+  @Nullable
+  public void setPins(BingMaps bingMaps, ReadableMap pinsAndOptions) {
+    Boolean centerPinsInView = false;
+    int mapViewMargin = 50;
+
+    if (pinsAndOptions.hasKey("centerPinsInView"))
+    {
+      centerPinsInView = pinsAndOptions.getBoolean("centerPinsInView");
+    }
+    if (pinsAndOptions.hasKey("mapViewMargin"))
+    {
+      mapViewMargin = pinsAndOptions.getInt("mapViewMargin");
+    }
+
+    ReadableArray pins = pinsAndOptions.getArray("pins");
+
+    if (pins != null) {
+      bingMaps.setPins(pins, centerPinsInView, mapViewMargin);
+    }
   }
 
+
+
   @ReactProp(name = "mapLocation")
+  @Nullable
   public void setmapLocation(BingMaps bingMaps, ReadableMap location) {
     bingMaps.setMapLocation(location);
   }
