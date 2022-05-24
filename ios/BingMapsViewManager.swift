@@ -12,16 +12,16 @@ import MapKit
 
 @objc(BingMapsViewManager)
 class BingMapsViewManager: RCTViewManager {
-  
+
   override static func requiresMainQueueSetup() -> Bool {
     return true;
   }
-  
+
   override func view() -> UIView! {
     return BingMaps(frame: self.accessibilityFrame);
   }
-  
-  @objc func setMapPinsFromManager(_ node: NSNumber, pinData: NSArray) {
+
+  @objc func setMapPinsFromManager(_ node: NSNumber, pinData: NSDictionary) {
     DispatchQueue.main.async {
       let component = self.bridge.uiManager.view(
         forReactTag: node
@@ -29,8 +29,8 @@ class BingMapsViewManager: RCTViewManager {
       component.setMapPins(pinData: pinData);
     }
   }
-  
-  
+
+
   @objc func setMapLocationFromManager(_ node: NSNumber, location: NSDictionary) {
     DispatchQueue.main.async {
       let component = self.bridge.uiManager.view(
@@ -39,5 +39,5 @@ class BingMapsViewManager: RCTViewManager {
       component.setMapLocation(location: location);
     }
   }
-  
+
 }
